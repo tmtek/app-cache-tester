@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" manifest="manifest.appcache">
+
+<head>
+    <meta charset="utf-8">
+    <title>App Cache Tester</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,shrink-to-fit=no">
+    <script src="appcache.js"></script>
+    <script>
+
+        function reload() {
+            window.location.reload();
+        }
+
+        function check() {
+            window.applicationCache.update();
+        }
+
+        function handleOnLoad() {
+
+            var events = [];
+
+            var statusDiv = document.querySelectorAll('#status')[0];
+            var resultsDiv = document.querySelectorAll('#results')[0];
+            var appCache = window.applicationCache;
+
+            function handleCacheEvent(eventName) {
+                return e => {
+                    events.push(eventName);
+                    resultsDiv.innerHTML = `${events.reduce((str, event) => `${str}<li>${event === 'updateready' && `<a href="#" onclick="reload()">${event}</a>` || event}</li>`, '')}`;
+                    var status = getAppCacheStatus(appCache);
+                    var statusString = `status: ${status}`;
+                    statusDiv.innerHTML = statusString;
+                };
+            }
+
+            // Fired after the first cache of the manifest.
+            appCache.addEventListener('cached', handleCacheEvent('cached'), false);
+
+            // Checking for an update. Always the first event fired in the sequence.
+            appCache.addEventListener('checking', handleCacheEvent('checking'), false);
+
+            // An update was found. The browser is fetching resources.
+            appCache.addEventListener('downloading', handleCacheEvent('downloading'), false);
+
+            // The manifest returns 404 or 410, the download failed,
+            // or the manifest changed while the download was in progress.
+            appCache.addEventListener('error', handleCacheEvent('error'), false);
+
+            // Fired after the first download of the manifest.
+            appCache.addEventListener('noupdate', handleCacheEvent('noupdate'), false);
+
+            // Fired if the manifest file returns a 404 or 410.
+            // This results in the application cache being deleted.
+            appCache.addEventListener('obsolete', handleCacheEvent('obsolete'), false);
+
+            // Fired for each resource listed in the manifest as it is being fetched.
+            appCache.addEventListener('progress', handleCacheEvent('progress'), false);
+
+            // Fired when the manifest resources have been newly redownloaded.
+            appCache.addEventListener('updateready', handleCacheEvent('updateready'), false);
+        }
+    </script>
+</head>
+
+<body onload="handleOnLoad()">
+    <h1>AppCache Tester</h1>
+    <div>
+        <a href="assets.html">Cached Assets</a>
+    </div>
+    <div>
+        <a href="#" onclick="check()">Check for Update</a>
+    </div>
+    <div id="status"></div>
+    <ul id="results"></ul>
+</body>
+
+</html>

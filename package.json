@@ -1,0 +1,27 @@
+{
+  "name": "app-cache-tester",
+  "version": "1.0.0",
+  "description": "An app to test AppCache",
+  "main": "index.html",
+  "scripts": {
+    "clean": "rm -rf build/",
+    "copyForBuild": "copyfiles  -u 1 src/** build",
+    "build": "npm run clean && npm run copyForBuild",
+    "dev": "http-server src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tmtek/app-cache-tester.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tmtek/app-cache-tester/issues"
+  },
+  "homepage": "https://github.com/tmtek/app-cache-tester#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "http-server": "^0.11.1",
+    "copyfiles": "^2.1.0"
+  }
+}

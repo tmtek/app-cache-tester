@@ -1,0 +1,10 @@
+CACHE MANIFEST
+#1
+
+CACHE:
+assets.html
+appcache.js
+img.png
+
+NETWORK:
+*
